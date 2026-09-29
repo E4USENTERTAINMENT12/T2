@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Smile Co.</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="noise"></div>
+    <div class="scanlines"></div>
+
+
+    <!-- =========================
+         PASSWORD SCREEN
+    ========================== -->
+
+    <main id="passwordScreen" class="screen">
+
+        <div class="corner top-left">
+            SMILE CO.
+        </div>
+
+        <div class="corner top-right">
+            CLASSIFIED
+        </div>
+
+
+        <div class="access-box">
+
+            <!-- LOGO -->
+            <img
+                src="SMILE_CO.png"
+                alt="Smile Co."
+                class="smile-logo"
+            >
+
+            <div class="small-text">
+                SECURE CONNECTION
+            </div>
+
+            <h1>
+                ACCESS
+            </h1>
+
+            <div class="line"></div>
+
+            <p>
+                AUTHORIZATION REQUIRED
+            </p>
+
+
+            <div class="login">
+
+                <input
+                    id="passwordInput"
+                    type="password"
+                    placeholder="ENTER CODE"
+                    autocomplete="off"
+                >
+
+                <button id="accessButton">
+                    ENTER
+                </button>
+
+            </div>
+
+
+            <div id="errorMessage"></div>
+
+        </div>
+
+
+        <div class="bottom-text">
+            UNAUTHORIZED ACCESS PROHIBITED
+        </div>
+
+    </main>
+
+
+    <!-- =========================
+         COUNTDOWN SCREEN
+    ========================== -->
+
+    <main id="countdownScreen" class="screen countdown-screen hidden">
+
+        <div class="corner top-left">
+            SMILE CO.
+        </div>
+
+        <div class="corner top-right">
+            TRANSMISSION
+        </div>
+
+
+        <div class="countdown-content">
+
+            <!-- SMALL LOGO -->
+            <img
+                src="SMILE_CO.png"
+                alt="Smile Co."
+                class="smile-logo countdown-logo"
+            >
+
+            <div class="small-text">
+                SMILE CO. PRESENTS
+            </div>
+
+
+            <h2>
+                GAMEPLAY
+            </h2>
+
+            <h3>
+                TRAILER 2
+            </h3>
+
+
+            <div class="line"></div>
+
+
+            <p class="releasing">
+                RELEASING IN
+            </p>
+
+
+            <div class="countdown">
+
+                <div class="unit">
+                    <span id="days">00</span>
+                    <label>DAYS</label>
+                </div>
+
+                <div class="colon">:</div>
+
+                <div class="unit">
+                    <span id="hours">00</span>
+                    <label>HOURS</label>
+                </div>
+
+                <div class="colon">:</div>
+
+                <div class="unit">
+                    <span id="minutes">00</span>
+                    <label>MINUTES</label>
+                </div>
+
+                <div class="colon">:</div>
+
+                <div class="unit">
+                    <span id="seconds">00</span>
+                    <label>SECONDS</label>
+                </div>
+
+            </div>
+
+
+            <div class="release-date">
+                25 · 11 · 2026
+            </div>
+
+
+            <div class="status">
+                <span class="status-dot"></span>
+                TRANSMISSION SCHEDULED
+            </div>
+
+        </div>
+
+
+        <div class="bottom-text">
+            © SMILE CO. — ALL RIGHTS RESERVED
+        </div>
+
+    </main>
+
+
+    <script>
+
+        /* =========================
+           PASSWORD
+        ========================== */
+
+        const correctPassword = "SM0595";
+
+        const passwordInput =
+            document.getElementById("passwordInput");
+
+        const accessButton =
+            document.getElementById("accessButton");
+
+        const passwordScreen =
+            document.getElementById("passwordScreen");
+
+        const countdownScreen =
+            document.getElementById("countdownScreen");
+
+        const errorMessage =
+            document.getElementById("errorMessage");
+
+
+        function checkPassword() {
+
+            const enteredPassword =
+                passwordInput.value.trim();
+
+
+            if (enteredPassword === correctPassword) {
+
+                errorMessage.textContent = "";
+
+                passwordScreen.classList.add("hide");
+
+
+                setTimeout(() => {
+
+                    passwordScreen.style.display = "none";
+
+                    countdownScreen.classList.remove("hidden");
+
+                    requestAnimationFrame(() => {
+                        countdownScreen.classList.add("show");
+                    });
+
+                }, 700);
+
+
+            } else {
+
+                errorMessage.textContent =
+                    "INVALID CODE";
+
+                passwordInput.classList.remove("shake");
+
+                void passwordInput.offsetWidth;
+
+                passwordInput.classList.add("shake");
+
+                passwordInput.value = "";
+
+                passwordInput.focus();
+
+            }
+
+        }
+
+
+        accessButton.addEventListener(
+            "click",
+            checkPassword
+        );
+
+
+        passwordInput.addEventListener(
+            "keydown",
+            (event) => {
+
+                if (event.key === "Enter") {
+                    checkPassword();
+                }
+
+            }
+        );
+
+
+        /* =========================
+           COUNTDOWN
+        ========================== */
+
+        const releaseDate =
+            new Date(
+                2026,
+                10,
+                25,
+                0,
+                0,
+                0
+            ).getTime();
+
+
+        function updateCountdown() {
+
+            const now = Date.now();
+
+            let difference =
+                releaseDate - now;
+
+
+            if (difference <= 0) {
+
+                document.getElementById("days")
+                    .textContent = "00";
+
+                document.getElementById("hours")
+                    .textContent = "00";
+
+                document.getElementById("minutes")
+                    .textContent = "00";
+
+                document.getElementById("seconds")
+                    .textContent = "00";
+
+
+                document.querySelector(".releasing")
+                    .textContent = "NOW AVAILABLE";
+
+
+                document.querySelector(".status")
+                    .innerHTML =
+                    '<span class="status-dot"></span> TRANSMISSION LIVE';
+
+                return;
+            }
+
+
+            const days =
+                Math.floor(
+                    difference /
+                    (1000 * 60 * 60 * 24)
+                );
+
+            difference %=
+                1000 * 60 * 60 * 24;
+
+
+            const hours =
+                Math.floor(
+                    difference /
+                    (1000 * 60 * 60)
+                );
+
+            difference %=
+                1000 * 60 * 60;
+
+
+            const minutes =
+                Math.floor(
+                    difference /
+                    (1000 * 60)
+                );
+
+            difference %=
+                1000 * 60;
+
+
+            const seconds =
+                Math.floor(
+                    difference /
+                    1000
+                );
+
+
+            document.getElementById("days")
+                .textContent =
+                String(days).padStart(2, "0");
+
+            document.getElementById("hours")
+                .textContent =
+                String(hours).padStart(2, "0");
+
+            document.getElementById("minutes")
+                .textContent =
+                String(minutes).padStart(2, "0");
+
+            document.getElementById("seconds")
+                .textContent =
+                String(seconds).padStart(2, "0");
+
+        }
+
+
+        updateCountdown();
+
+        setInterval(
+            updateCountdown,
+            1000
+        );
+
+    </script>
+
+</body>
+</html>
